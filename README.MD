@@ -3,6 +3,7 @@
 Hey,
 
 Its a small program in rust to help you having an 'extra life' ❤️ in case of your beacon/implant crash.
+Extra life will monitor a process, and every time this process crash, extra life will respawn the process.
 
 - Without arguments extralife will monitor and re-spawn it's parent process.
 - But you can also specify a pid as argument to monitor an other process, example: `extralife.exe 4994`
