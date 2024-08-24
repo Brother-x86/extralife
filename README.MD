@@ -29,6 +29,14 @@ If you want to die/crash the beacon, you can remove extra life, your beacon prog
 
 ![Alt text](doc/remove_extra_life.png?raw=true "Remove")
 
+## compilation
+
+I test it only for windows, you can compile it like that:
+
+```
+cargo build --release --target x86_64-pc-windows-gnu
+```
+
 ## pro tips
 
 if you execute extralife.exe twice, you will have you 2 extra life !! 💕
