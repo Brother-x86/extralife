@@ -5,6 +5,12 @@ use std::{thread, time};
 use sysinfo::{Pid, System};
 
 use std::env;
+use std::process::Stdio;
+use std::os::windows::process::CommandExt;
+
+#[cfg(target_os = "windows")]
+const CREATE_NO_WINDOW: u32 = 0x08000000;
+
 
 fn main() {
     let mut sys = System::new_all();
@@ -23,6 +29,7 @@ fn main() {
 
     let target_process = sys.process(target_pid).unwrap();
     let target_path = target_process.exe().unwrap();
+    let cmdline: Vec<String> = target_process.cmd().to_vec();
 
     let mut sys = System::new_all();
     loop {
@@ -31,8 +38,20 @@ fn main() {
         target_pid = match sys.process(target_pid) {
             Some(_) => target_pid,
             None => {
-                let spawn = Command::new(target_path).spawn().unwrap();
-                Pid::from_u32(spawn.id())
+                let mut comm = Command::new(target_path);
+                for arg in &cmdline {
+                    comm.arg(arg);
+                }
+
+                comm.stdin(Stdio::null())
+                .stdout(Stdio::null())
+                .stderr(Stdio::null());
+
+                #[cfg(target_os = "windows")]
+                comm.creation_flags(CREATE_NO_WINDOW);
+
+                let child= comm.spawn().unwrap();
+                Pid::from_u32(child.id())
             }
         };
 
